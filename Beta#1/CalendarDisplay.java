@@ -42,10 +42,10 @@ public class CalendarDisplay {
     private static LocalDate parseDateInput(String prompt) {
         // Define a list of possible date patterns
         List<DateTimeFormatter> formatters = new ArrayList<>();
-        formatters.add(DateTimeFormatter.ofPattern("yyyy-MM-dd"));         // 2025-01-24
-        formatters.add(DateTimeFormatter.ofPattern("yyyy MM dd"));         // 2025 01 24
-        formatters.add(DateTimeFormatter.ofPattern("MMMM d, yyyy", Locale.ENGLISH)); // January 24, 2025
-        formatters.add(DateTimeFormatter.ofPattern("MMM d, yyyy", Locale.ENGLISH));   // Jan 24, 2025
+        formatters.add(DateTimeFormatter.ofPattern("yyyy-MM-dd"));        
+        formatters.add(DateTimeFormatter.ofPattern("yyyy MM dd"));      
+        formatters.add(DateTimeFormatter.ofPattern("MMMM d, yyyy", Locale.ENGLISH)); 
+        formatters.add(DateTimeFormatter.ofPattern("MMM d, yyyy", Locale.ENGLISH));   
 
         while (true) {
             System.out.print(prompt);
@@ -55,7 +55,6 @@ public class CalendarDisplay {
                 try {
                     return LocalDate.parse(input, formatter);
                 } catch (DateTimeParseException e) {
-                    // We'll try the next format
                 }
             }
             // If we reach here, none of the formats succeeded
@@ -87,8 +86,7 @@ public class CalendarDisplay {
             int firstDayOfWeek = yearMonth.atDay(1).getDayOfWeek().getValue();
             // Convert so Sunday=1, Monday=2, etc.
             firstDayOfWeek = (firstDayOfWeek % 7) + 1;
-
-            // Print leading spaces
+            
             for (int i = 1; i < firstDayOfWeek; i++) {
                 System.out.print("    ");
             }
