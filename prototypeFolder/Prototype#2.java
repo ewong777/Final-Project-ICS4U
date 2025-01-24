@@ -35,17 +35,17 @@ public class CalendarDisplay {
         }
     }
 
-    public static void displayCalendar(int year) {
-        System.out.println("\n===== " + year + " Calendar =====");
-        for (Month month : Month.values()) {
-            System.out.println("\n" + month.getDisplayName(TextStyle.FULL, Locale.ENGLISH) + " " + year);
+    public static void displayCalendar(int year, int month) {
+        try {
+            Month selectedMonth = Month.of(month);
+            System.out.println("\n===== " + selectedMonth.getDisplayName(TextStyle.FULL, Locale.ENGLISH) + " " + year + " =====");
             System.out.println("Sun Mon Tue Wed Thu Fri Sat");
 
             YearMonth yearMonth = YearMonth.of(year, month);
             int daysInMonth = yearMonth.lengthOfMonth();
-            int firstDayOfWeek = yearMonth.atDay(1).getDayOfWeek().getValue(); 
+            int firstDayOfWeek = yearMonth.atDay(1).getDayOfWeek().getValue(); // 1 = Monday, 7 = Sunday
 
-            firstDayOfWeek = (firstDayOfWeek % 7) + 1; 
+            firstDayOfWeek = (firstDayOfWeek % 7) + 1; // Adjust to Sunday start
 
             for (int i = 1; i < firstDayOfWeek; i++) {
                 System.out.print("    ");
@@ -58,6 +58,8 @@ public class CalendarDisplay {
                 }
             }
             System.out.println();
+        } catch (Exception e) {
+            System.out.println("Invalid month input. Please enter a valid month number or name.");
         }
     }
 
@@ -161,18 +163,33 @@ public class CalendarDisplay {
         }
     }
 
+    public static int parseMonth(String monthInput) {
+        try {
+            return Integer.parseInt(monthInput);
+        } catch (NumberFormatException e) {
+            for (Month month : Month.values()) {
+                if (month.getDisplayName(TextStyle.FULL, Locale.ENGLISH).equalsIgnoreCase(monthInput) ||
+                    month.getDisplayName(TextStyle.SHORT, Locale.ENGLISH).equalsIgnoreCase(monthInput)) {
+                    return month.getValue();
+                }
+            }
+        }
+        return -1; // Invalid month
+    }
+
     public static void main(String[] args) {
         loadTasks();
         Scanner scanner = new Scanner(System.in);
 
         int year = LocalDate.now().getYear();
-        displayCalendar(year);
+        displayCalendar(year, LocalDate.now().getMonthValue());
 
         while (true) {
             System.out.println("\nMenu:");
             System.out.println("1. Add Task");
             System.out.println("2. View Tasks (Today, Specific Date, Month, or Year)");
-            System.out.println("3. Exit");
+            System.out.println("3. Display Calendar for a Specific Month");
+            System.out.println("4. Exit");
             System.out.print("Choose an option: ");
 
             int choice;
@@ -221,18 +238,7 @@ public class CalendarDisplay {
                             System.out.print("Enter month (1-12 or name): ");
                             String monthInput = scanner.nextLine().trim();
 
-                            int taskMonth = 0;
-                            try {
-                                taskMonth = Integer.parseInt(monthInput);
-                            } catch (NumberFormatException e) {
-                                for (Month month : Month.values()) {
-                                    if (month.getDisplayName(TextStyle.FULL, Locale.ENGLISH).equalsIgnoreCase(monthInput) ||
-                                        month.getDisplayName(TextStyle.SHORT, Locale.ENGLISH).equalsIgnoreCase(monthInput)) {
-                                        taskMonth = month.getValue();
-                                        break;
-                                    }
-                                }
-                            }
+                            int taskMonth = parseMonth(monthInput);
 
                             if (taskMonth >= 1 && taskMonth <= 12) {
                                 viewTasksForMonth(taskYear, taskMonth);
@@ -250,12 +256,24 @@ public class CalendarDisplay {
                     }
                     break;
                 case 3:
-                    System.out.println("Exiting...");
-                    saveTasks();
+                    System.out.print("Enter year: ");
+                    int selectedYear = Integer.parseInt(scanner.nextLine().trim());
+                    System.out.print("Enter month (1-12 or name): ");
+                    String monthInputForCalendar = scanner.nextLine().trim();
+
+                    int month = parseMonth(monthInputForCalendar);
+                    if (month >= 1 && month <= 12) {
+                        displayCalendar(selectedYear, month);
+                    } else {
+                        System.out.println("Invalid month. Please enter a number between 1 and 12 or a valid month name.");
+                    }
+                    break;
+                case 4:
+                    System.out.println("Exiting program. Goodbye!");
                     scanner.close();
                     return;
                 default:
-                    System.out.println("Invalid choice. Please enter a valid option.");
+                    System.out.println("Invalid choice. Please choose a valid option.");
             }
         }
     }
