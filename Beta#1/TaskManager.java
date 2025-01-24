@@ -50,6 +50,7 @@ public class TaskManager {
 
     /**
      * Merge tasks from a specified file (does NOT clear existing tasks first).
+     * If a date is duplicated, overwrites the old task with the new one.
      */
     public static int importTasksFromFile(String filePath) {
         int importCount = 0;
@@ -60,7 +61,7 @@ public class TaskManager {
                 if (parts.length == 2) {
                     try {
                         LocalDate date = LocalDate.parse(parts[0]);
-                        tasks.put(date, parts[1]);  
+                        tasks.put(date, parts[1]);  // overwrites if date already exists
                         importCount++;
                     } catch (DateTimeParseException e) {
                         System.err.println("Skipping invalid date in import file: " + line);
@@ -78,24 +79,23 @@ public class TaskManager {
         return importCount;
     }
 
-    /**
-     * Add a (single) task for a specific date, then immediately save to disk.
-     */
+     //Add a (single) task for a specific date, then immediately save to disk.
+
     public static void addTask(LocalDate date, String task) {
         tasks.put(date, task);
         saveTasks();
     }
 
-    /**
-     * Returns the entire tasks map (date -> single task).
-     */
+
+     // Returns the entire tasks map (date -> single task).
+
     public static HashMap<LocalDate, String> getTasks() {
         return tasks;
     }
 
-    /**
-     * Returns the single task for a specific date, or null if none exist.
-     */
+    
+    //Returns the single task for a specific date, or null if none exist.
+   
     public static String getTaskForDate(LocalDate date) {
         return tasks.getOrDefault(date, null);
     }
@@ -113,6 +113,16 @@ public class TaskManager {
             }
         }
         return false;  // Task not found
+    }
+    
+    /**
+     * View tasks for the specified month & year,
+     * printing them if they exist or a message if not.
+     */
+    public static void viewTasksByMonth(int year, int month) {
+        System.out.println("\n===== Tasks for "
+                + Month.of(month).getDisplayName(TextStyle.FULL, Locale.ENGLISH)
+                + " " + year + " =====");
     }
 
     /**
