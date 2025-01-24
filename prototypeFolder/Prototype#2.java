@@ -43,9 +43,9 @@ public class CalendarDisplay {
 
             YearMonth yearMonth = YearMonth.of(year, month);
             int daysInMonth = yearMonth.lengthOfMonth();
-            int firstDayOfWeek = yearMonth.atDay(1).getDayOfWeek().getValue(); // 1 = Monday, 7 = Sunday
+            int firstDayOfWeek = yearMonth.atDay(1).getDayOfWeek().getValue(); 
 
-            firstDayOfWeek = (firstDayOfWeek % 7) + 1; // Adjust to Sunday start
+            firstDayOfWeek = (firstDayOfWeek % 7) + 1; 
 
             for (int i = 1; i < firstDayOfWeek; i++) {
                 System.out.print("    ");
