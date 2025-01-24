@@ -42,10 +42,10 @@ public class CalendarDisplay {
     private static LocalDate parseDateInput(String prompt) {
         // Define a list of possible date patterns
         List<DateTimeFormatter> formatters = new ArrayList<>();
-        formatters.add(DateTimeFormatter.ofPattern("yyyy-MM-dd"));        
-        formatters.add(DateTimeFormatter.ofPattern("yyyy MM dd"));      
-        formatters.add(DateTimeFormatter.ofPattern("MMMM d, yyyy", Locale.ENGLISH)); 
-        formatters.add(DateTimeFormatter.ofPattern("MMM d, yyyy", Locale.ENGLISH));   
+        formatters.add(DateTimeFormatter.ofPattern("yyyy-MM-dd"));         // 2025-01-24
+        formatters.add(DateTimeFormatter.ofPattern("yyyy MM dd"));         // 2025 01 24
+        formatters.add(DateTimeFormatter.ofPattern("MMMM d, yyyy", Locale.ENGLISH)); // January 24, 2025
+        formatters.add(DateTimeFormatter.ofPattern("MMM d, yyyy", Locale.ENGLISH));   // Jan 24, 2025
 
         while (true) {
             System.out.print(prompt);
@@ -55,6 +55,7 @@ public class CalendarDisplay {
                 try {
                     return LocalDate.parse(input, formatter);
                 } catch (DateTimeParseException e) {
+                    // We'll try the next format
                 }
             }
             // If we reach here, none of the formats succeeded
@@ -86,7 +87,8 @@ public class CalendarDisplay {
             int firstDayOfWeek = yearMonth.atDay(1).getDayOfWeek().getValue();
             // Convert so Sunday=1, Monday=2, etc.
             firstDayOfWeek = (firstDayOfWeek % 7) + 1;
-            
+
+            // Print leading spaces
             for (int i = 1; i < firstDayOfWeek; i++) {
                 System.out.print("    ");
             }
@@ -95,11 +97,11 @@ public class CalendarDisplay {
             for (int day = 1; day <= daysInMonth; day++) {
                 LocalDate currentDate = LocalDate.of(year, month, day);
 
-                // Check if holiday
+                // Check holiday
                 if (HolidayManager.getHolidays().containsKey(currentDate)) {
                     System.out.printf("[%2d]", day); // highlight holiday
                 }
-                // Check if task
+                // Check task
                 else if (TaskManager.getTasks() != null
                         && TaskManager.getTasks().containsKey(currentDate)) {
                     System.out.printf("*%2d*", day); // highlight task date
@@ -119,14 +121,7 @@ public class CalendarDisplay {
         }
     }
 
-    /**
-     * View tasks for the specified month & year,
-     * printing them if they exist or a message if not.
-     */
-    public static void viewTasksByMonth(int year, int month) {
-        System.out.println("\n===== Tasks for "
-                + Month.of(month).getDisplayName(TextStyle.FULL, Locale.ENGLISH)
-                + " " + year + " =====");
+
 
         boolean tasksFound = false;
         if (TaskManager.getTasks() != null) {
@@ -142,7 +137,7 @@ public class CalendarDisplay {
         if (!tasksFound) {
             System.out.println("No tasks for this month.");
         }
-    }
+    
 
     public static void main(String[] args) {
         // Initialize holidays & tasks
@@ -183,7 +178,7 @@ public class CalendarDisplay {
                 // View tasks by a specific month/year
                 int year = parseIntegerInput("Enter year: ");
                 int month = parseIntegerInput("Enter month (1–12): ");
-                viewTasksByMonth(year, month);
+                TaskManager.viewTasksByMonth(year, month);
             }
             else if (choice == 5) {
                 // Delete task by name
