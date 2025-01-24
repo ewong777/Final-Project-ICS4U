@@ -50,7 +50,6 @@ public class TaskManager {
 
     /**
      * Merge tasks from a specified file (does NOT clear existing tasks first).
-     * If a date is duplicated, overwrites the old task with the new one.
      */
     public static int importTasksFromFile(String filePath) {
         int importCount = 0;
@@ -61,7 +60,7 @@ public class TaskManager {
                 if (parts.length == 2) {
                     try {
                         LocalDate date = LocalDate.parse(parts[0]);
-                        tasks.put(date, parts[1]);  // overwrites if date already exists
+                        tasks.put(date, parts[1]);  
                         importCount++;
                     } catch (DateTimeParseException e) {
                         System.err.println("Skipping invalid date in import file: " + line);
