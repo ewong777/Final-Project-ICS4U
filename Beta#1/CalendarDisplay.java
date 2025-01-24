@@ -97,11 +97,11 @@ public class CalendarDisplay {
             for (int day = 1; day <= daysInMonth; day++) {
                 LocalDate currentDate = LocalDate.of(year, month, day);
 
-                // Check holiday
+                // Check if holiday
                 if (HolidayManager.getHolidays().containsKey(currentDate)) {
                     System.out.printf("[%2d]", day); // highlight holiday
                 }
-                // Check task
+                // Check if task
                 else if (TaskManager.getTasks() != null
                         && TaskManager.getTasks().containsKey(currentDate)) {
                     System.out.printf("*%2d*", day); // highlight task date
@@ -121,7 +121,14 @@ public class CalendarDisplay {
         }
     }
 
-
+    /**
+     * View tasks for the specified month & year,
+     * printing them if they exist or a message if not.
+     */
+    public static void viewTasksByMonth(int year, int month) {
+        System.out.println("\n===== Tasks for "
+                + Month.of(month).getDisplayName(TextStyle.FULL, Locale.ENGLISH)
+                + " " + year + " =====");
 
         boolean tasksFound = false;
         if (TaskManager.getTasks() != null) {
@@ -137,7 +144,7 @@ public class CalendarDisplay {
         if (!tasksFound) {
             System.out.println("No tasks for this month.");
         }
-    
+    }
 
     public static void main(String[] args) {
         // Initialize holidays & tasks
@@ -178,7 +185,7 @@ public class CalendarDisplay {
                 // View tasks by a specific month/year
                 int year = parseIntegerInput("Enter year: ");
                 int month = parseIntegerInput("Enter month (1–12): ");
-                TaskManager.viewTasksByMonth(year, month);
+                viewTasksByMonth(year, month);
             }
             else if (choice == 5) {
                 // Delete task by name
